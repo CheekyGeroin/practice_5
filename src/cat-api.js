@@ -4,5 +4,26 @@ const KEY =
 
 axios.defaults.headers.common['x-api-key'] = KEY;
 
-const fetchCatBreeds = () => {};
-const fetchCatById = catId => {};
+export const fetchCatBreeds = () => {
+  axios
+    .get('https://api.thecatapi.com/v1/breeds')
+    .then(res => {
+      return res;
+    })
+    .catch(error => {
+      console.log(error);
+    });
+};
+export const fetchCatById = catId => {
+  axios
+    .get(`https://api.thecatapi.com/v1/images/search?breed_ids=${catId}`)
+    .then(res => {
+      return res;
+    })
+    .then(cat => {
+      console.log(cat);
+    })
+    .catch(error => {
+      console.log(error);
+    });
+};
