@@ -1,4 +1,5 @@
-import { fetchCatBreeds, fetchCatById } from './cat-api';
+import Notiflix from 'notiflix';
+import { fetchBreeds, fetchCatByBreed } from './cat-api';
 
 const refs = {
   select: document.querySelector('.breed-select'),
@@ -7,9 +8,22 @@ const refs = {
   info: document.querySelector('.cat-info'),
 };
 
-const firstFetch = () => {
-  const data = fetchCatBreeds();
-  console.log(data);
+refs.loader.classList.add('hide');
+refs.error.classList.add('hide');
+const createMarkup = breedArr => {
+  if (breedArr.length > 1) {
+    return breedArr.map(({ id, name }) => {
+      return `<option value=${id}>${name}</option>`;
+    });
+  }
 };
 
-firstFetch();
+const addMarkup = markup => {
+  refs.select.insertAdjacentHTML('beforeend', markup);
+};
+fetchBreeds()
+  .then(createMarkup)
+  .then(addMarkup)
+  .catch(error => {
+    Notiflix.Notify.failure(refs.error.textContent);
+  });

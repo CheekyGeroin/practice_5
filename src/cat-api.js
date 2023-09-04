@@ -4,20 +4,23 @@ const KEY =
 
 axios.defaults.headers.common['x-api-key'] = KEY;
 
-export const fetchCatBreeds = () => {
-  axios
+export const fetchBreeds = () => {
+  return axios
     .get('https://api.thecatapi.com/v1/breeds')
-    .then(res => {
-      return res;
+    .then(r => {
+      if (r.status === 200) {
+        return r.data;
+      }
     })
     .catch(error => {
       console.log(error);
     });
 };
-export const fetchCatById = catId => {
+export const fetchCatByBreed = catId => {
   axios
     .get(`https://api.thecatapi.com/v1/images/search?breed_ids=${catId}`)
     .then(res => {
+      console.log(res);
       return res;
     })
     .then(cat => {
