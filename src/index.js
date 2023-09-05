@@ -16,14 +16,45 @@ const createMarkup = breedArr => {
       return `<option value=${id}>${name}</option>`;
     });
   }
+  return;
 };
 
 const addMarkup = markup => {
   refs.select.insertAdjacentHTML('beforeend', markup);
 };
-fetchBreeds()
-  .then(createMarkup)
-  .then(addMarkup)
-  .catch(error => {
-    Notiflix.Notify.failure(refs.error.textContent);
-  });
+const showError = () => {
+  Notiflix.Notify.failure(refs.error.textContent);
+};
+fetchBreeds().then(createMarkup).then(addMarkup).catch(showError);
+
+const createInfo = data => {
+  if (data.length > 1) {
+    return data.map(({ name, description, temperament, wikipedia_url }) => {
+      return `<div class="info-img__container">
+      <img class="info__img" href="${wikipedia_url}" alt="${name}"/>
+      </div>
+      <div class="info__container">
+        <h1 class="cat__name">${name}</h1>
+        <p class="cat__description">${description}</p>
+        <p class="cat__temperament"><span class="cat__accent">Temperament:</span>${temperament}</p>
+      </div>`;
+    });
+  }
+};
+const addInfoMarkup = markup => {
+  refs.info.insertAdjacentHTML('beforeend', markup);
+};
+
+const onChangeSelect = () => {
+  if (refs.select.value !== '') {
+    const value = refs.select.value;
+    fetchCatByBreed(value)
+      .then(createInfo)
+      .then(addInfoMarkup)
+      .catch(showError);
+  }
+  return;
+};
+
+console.log(fetchCatByBreed('bamb'));
+refs.select.addEventListener('change', onChangeSelect);
