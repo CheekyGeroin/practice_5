@@ -16,13 +16,12 @@ export const fetchBreeds = async () => {
       console.log(error);
     });
 };
-export const fetchCatByBreed = catId => {
-  axios
+export const fetchCatByBreed = async catId => {
+  return await axios
     .get(`https://api.thecatapi.com/v1/images/search?breed_ids=${catId}`)
     .then(r => {
       if (r.status === 200) {
-        console.log(r.data[0].breeds);
-        return r.data[0].breeds;
+        return r.data;
       }
     })
     .catch(error => {

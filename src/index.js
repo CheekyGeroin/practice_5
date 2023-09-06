@@ -1,4 +1,5 @@
 import Notiflix from 'notiflix';
+import SlimSelect from 'slim-select';
 import { fetchBreeds, fetchCatByBreed } from './cat-api';
 
 const refs = {
@@ -7,9 +8,9 @@ const refs = {
   error: document.querySelector('.error'),
   info: document.querySelector('.cat-info'),
 };
-
 refs.loader.classList.add('hide');
 refs.error.classList.add('hide');
+
 const createMarkup = breedArr => {
   if (breedArr.length > 1) {
     return breedArr.map(({ id, name }) => {
@@ -28,10 +29,11 @@ const showError = () => {
 fetchBreeds().then(createMarkup).then(addMarkup).catch(showError);
 
 const createInfo = data => {
-  if (data.length > 1) {
-    return data.map(({ name, description, temperament, wikipedia_url }) => {
+  if (data.length >= 1) {
+    return data.map(cat => {
+      const { name, description, temperament } = cat.breeds[0];
       return `<div class="info-img__container">
-      <img class="info__img" href="${wikipedia_url}" alt="${name}"/>
+      <img class="info__img" src="${cat.url}" alt="${name}" width="300" height="300"/>
       </div>
       <div class="info__container">
         <h1 class="cat__name">${name}</h1>
@@ -42,12 +44,16 @@ const createInfo = data => {
   }
 };
 const addInfoMarkup = markup => {
+  refs.loader.classList.add('hide');
   refs.info.insertAdjacentHTML('beforeend', markup);
 };
 
 const onChangeSelect = () => {
+  refs.info.innerHTML = ' ';
+
   if (refs.select.value !== '') {
     const value = refs.select.value;
+    refs.loader.classList.remove('hide');
     fetchCatByBreed(value)
       .then(createInfo)
       .then(addInfoMarkup)
@@ -56,5 +62,4 @@ const onChangeSelect = () => {
   return;
 };
 
-console.log(fetchCatByBreed('bamb'));
 refs.select.addEventListener('change', onChangeSelect);
